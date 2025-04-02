@@ -35,9 +35,134 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
+        /* Base styles */
         body {
             font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
+
+        /* Mobile-first styles */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                line-height: 1.2;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+                line-height: 1.3;
+            }
+            
+            p {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+            
+            .word {
+                display: inline-block;
+                margin-right: 0.3rem;
+            }
+
+            /* Improved mobile navigation */
+            #mobile-menu {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: white;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                z-index: 40;
+            }
+
+            /* Better touch targets for mobile */
+            button, 
+            a.inline-flex,
+            .mobile-touch-target {
+                min-height: 44px;
+                padding: 0.75rem 1rem;
+            }
+
+            /* Improved spacing for mobile */
+            section {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+
+            /* Better card layouts for mobile */
+            .grid {
+                gap: 1.5rem;
+            }
+
+            /* Improved timer display for mobile */
+            .timer-section {
+                padding: 2rem 1rem;
+            }
+
+            .timer-box {
+                width: 45%;
+                margin-bottom: 1rem;
+                padding: 1rem;
+            }
+
+            /* Better image handling for mobile */
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* Improved form elements for mobile */
+            input,
+            select,
+            textarea {
+                font-size: 16px !important; /* Prevents zoom on iOS */
+                padding: 0.75rem;
+            }
+
+            /* Better button spacing for mobile */
+            .button-group {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            /* Improved mobile hero section */
+            .hero-section {
+                min-height: 100vh;
+                padding-top: 5rem;
+            }
+
+            /* Better mobile text contrast */
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Smooth scrolling for anchor links */
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Mobile menu transition */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Improved accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         .form-input {
             @apply w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 transition duration-300;
         }
@@ -86,13 +211,58 @@
         .countdown-item {
             @apply text-center glass-effect p-4 rounded-lg;
             min-width: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .countdown-value {
-            @apply text-3xl font-bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            @apply text-3xl md:text-4xl font-bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         .countdown-label {
             @apply text-sm mt-1 opacity-90;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .countdown-item {
+                min-width: 80px;
+                padding: 0.75rem;
+            }
+            .countdown-value {
+                font-size: 1.5rem;
+            }
+            .countdown-label {
+                font-size: 0.75rem;
+            }
+            .flex-wrap {
+                gap: 0.5rem;
+            }
+        }
+
+        /* Word animation */
+        .word-animation span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            margin-right: 8px;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .word-animation span:nth-child(1) { animation-delay: 0.2s; }
+        .word-animation span:nth-child(2) { animation-delay: 0.4s; }
+        .word-animation span:nth-child(3) { animation-delay: 0.6s; }
+        .word-animation span:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -126,18 +296,18 @@
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="md:hidden hidden pb-4">
-                <a href="#" class="block py-2 text-gray-700 hover:text-[#2C5530]">Home</a>
-                <a href="#about" class="block py-2 text-gray-700 hover:text-[#2C5530]">About</a>
-                <a href="#program" class="block py-2 text-gray-700 hover:text-[#2C5530]">Program</a>
-                <a href="#speakers" class="block py-2 text-gray-700 hover:text-[#2C5530]">Speakers</a>
-                <a href="registration.html" class="block py-2 bg-[#2C5530] text-white px-4 rounded-lg hover:bg-[#4A7B3D] transition-colors mb-2">
-                    <i class="fas fa-user-plus mr-2"></i>Register for Upcoming Conference
-                </a>
-                <a href="#contact" class="block py-2 text-gray-700 hover:text-[#2C5530]">Contact</a>
-            </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden pb-4">
+            <a href="#" class="block py-2 text-gray-700 hover:text-[#2C5530]">Home</a>
+            <a href="#about" class="block py-2 text-gray-700 hover:text-[#2C5530]">About</a>
+            <a href="#program" class="block py-2 text-gray-700 hover:text-[#2C5530]">Program</a>
+            <a href="#speakers" class="block py-2 text-gray-700 hover:text-[#2C5530]">Speakers</a>
+            <a href="registration.html" class="block py-2 bg-[#2C5530] text-white px-4 rounded-lg hover:bg-[#4A7B3D] transition-colors mb-2">
+                <i class="fas fa-user-plus mr-2"></i>Register for Upcoming Conference
+            </a>
+            <a href="#contact" class="block py-2 text-gray-700 hover:text-[#2C5530]">Contact</a>
         </div>
     </nav>
 
@@ -153,25 +323,7 @@
                     <span>2024</span>
                 </h1>
                 <p class="text-xl md:text-2xl mb-8">Transforming Agriculture for a Sustainable Future</p>
-                <div class="flex justify-center space-x-4">
-                    <div class="countdown-item">
-                        <div class="countdown-value" id="days">00</div>
-                        <div class="countdown-label">Days</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-value" id="hours">00</div>
-                        <div class="countdown-label">Hours</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-value" id="minutes">00</div>
-                        <div class="countdown-label">Minutes</div>
-                    </div>
-                    <div class="countdown-item">
-                        <div class="countdown-value" id="seconds">00</div>
-                        <div class="countdown-label">Seconds</div>
-                    </div>
-                </div>
-                <div class="mt-8 flex justify-center space-x-4">
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
                     <a href="registration.html" class="bg-white text-[#2C5530] px-8 py-3 rounded-full font-semibold hover:bg-[#E9F5E1] transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                         <i class="fas fa-user-plus mr-2"></i>Register for Upcoming Conference
                     </a>
@@ -265,35 +417,48 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 gradient-text">About the Conference</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="glass-effect p-8 rounded-lg">
-                    <p class="text-gray-600 mb-4">
-                        The International Association of Agricultural Economists (IAAE) is proud to present the 32nd International Conference of Agricultural Economists. This prestigious event brings together leading experts, researchers, and practitioners from around the world to discuss and share knowledge about sustainable agricultural and food systems.
-                    </p>
-                    <p class="text-gray-600">
-                        Join us for an engaging program featuring keynote speakers, panel discussions, and networking opportunities with professionals from the agricultural economics community.
-                    </p>
+    <section id="about" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">About the Conference</h2>
+                <div class="w-20 h-1 bg-[#2C5530] mx-auto mb-6"></div>
+                <p class="text-gray-600 text-base md:text-lg">Join us for an extraordinary gathering of agricultural minds, innovators, and industry leaders at the Just Agriculture Conference 2024.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <div class="text-[#2C5530] text-3xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Expert Speakers</h3>
+                    <p class="text-gray-600">Learn from industry leaders and renowned agricultural experts sharing cutting-edge insights.</p>
                 </div>
-                <div class="glass-effect p-8 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4 gradient-text">Conference Details</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-center">
-                            <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>
-                            <span>August 2-7, 2024</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-map-marker-alt text-blue-600 mr-3"></i>
-                            <span>NASC Complex, New Delhi, India</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-users text-blue-600 mr-3"></i>
-                            <span>Expected 1000+ participants</span>
-                        </li>
-                    </ul>
+
+                <!-- Feature 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <div class="text-[#2C5530] text-3xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Networking</h3>
+                    <p class="text-gray-600">Connect with fellow professionals and build valuable relationships in the agricultural sector.</p>
                 </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <div class="text-[#2C5530] text-3xl mb-4">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Innovation</h3>
+                    <p class="text-gray-600">Discover the latest agricultural technologies and sustainable farming practices.</p>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="registration.html" class="inline-flex items-center px-6 py-3 text-base md:text-lg font-semibold text-white bg-[#2C5530] rounded-lg hover:bg-[#4A7B3D] transition-colors duration-300">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Register Now
+                </a>
             </div>
         </div>
     </section>
@@ -368,11 +533,51 @@
     </section>
 
     <!-- Speakers Section -->
-    <section id="speakers" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 gradient-text">Featured Speakers</h2>
-            <div class="grid md:grid-cols-4 gap-8">
-                <!-- Speaker cards will be dynamically added here -->
+    <section id="speakers" class="py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Featured Speakers</h2>
+                <div class="w-20 h-1 bg-[#2C5530] mx-auto mb-6"></div>
+                <p class="text-gray-600 text-base md:text-lg">Learn from the best minds in agriculture</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Speaker 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <img src="images/speaker1.jpg" alt="Dr. Sarah Johnson" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Dr. Sarah Johnson</h3>
+                        <p class="text-[#2C5530] mb-3">Agricultural Innovation Expert</p>
+                        <p class="text-gray-600 text-sm">Leading researcher in sustainable farming practices and agricultural technology</p>
+                    </div>
+                </div>
+
+                <!-- Speaker 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <img src="images/speaker2.jpg" alt="Prof. Michael Chen" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Prof. Michael Chen</h3>
+                        <p class="text-[#2C5530] mb-3">Climate Smart Agriculture</p>
+                        <p class="text-gray-600 text-sm">Expert in climate-resilient farming systems and adaptation strategies</p>
+                    </div>
+                </div>
+
+                <!-- Speaker 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transform hover:-translate-y-1 transition-transform duration-300">
+                    <img src="images/speaker3.jpg" alt="Dr. Emily Patel" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Dr. Emily Patel</h3>
+                        <p class="text-[#2C5530] mb-3">Digital Agriculture Specialist</p>
+                        <p class="text-gray-600 text-sm">Pioneer in implementing digital solutions for modern farming</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="#schedule" class="inline-flex items-center px-6 py-3 text-base md:text-lg font-semibold text-white bg-[#2C5530] rounded-lg hover:bg-[#4A7B3D] transition-colors duration-300">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    View Full Schedule
+                </a>
             </div>
         </div>
     </section>
@@ -673,5 +878,65 @@
 
     <!-- JavaScript -->
     <script src="script.js"></script>
+    <script>
+        // Mobile menu toggle with improved touch handling
+        document.getElementById('mobile-menu-button').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            
+            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Smooth scroll for anchor links with offset for fixed header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition - headerOffset;
+
+                    window.scrollBy({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu after clicking a link
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+
+        // Improved countdown timer
+        function updateTimer() {
+            const now = new Date().getTime();
+            const countDownDate = new Date("August 2, 2024 00:00:00").getTime();
+            const distance = countDownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").textContent = String(days).padStart(2, '0');
+            document.getElementById("hours").textContent = String(hours).padStart(2, '0');
+            document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
+        }
+
+        // Update timer immediately and then every second
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    </script>
 </body>
 </html> 
