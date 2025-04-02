@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Just Agriculture Conference 2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            margin: 0 4px;
+        }
+        .step-active { display: block; }
+        .step-inactive { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="text-2xl font-bold text-[#2C5530] flex items-center">
+                    <i class="fas fa-seedling mr-2"></i>Just Agriculture
+                </a>
+                <a href="index.html" class="text-gray-600 hover:text-[#2C5530]">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Payment Steps -->
+    <div class="max-w-3xl mx-auto mt-10 px-4">
+        <!-- Progress Bar -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-[#2C5530] text-white rounded-full flex items-center justify-center font-bold step-1-indicator">1</div>
+                <div class="h-1 w-24 bg-[#2C5530] mx-4"></div>
+            </div>
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold step-2-indicator">2</div>
+                <div class="h-1 w-24 bg-gray-300 mx-4"></div>
+            </div>
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold step-3-indicator">3</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Payment Details -->
+        <div id="step-1" class="step-active bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Payment Details</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">Registration ID</label>
+                    <input type="text" id="registration-id" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your registration ID">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">Amount</label>
+                    <input type="text" id="amount" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" value="500.00" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">Phone Number for OTP</label>
+                    <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your phone number">
+                </div>
+                <button onclick="proceedToPayment()" class="w-full bg-[#2C5530] text-white py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
+                    Proceed to Payment
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: OTP Verification -->
+        <div id="step-2" class="step-inactive bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">OTP Verification</h2>
+            <p class="text-gray-600 mb-6">Enter the OTP sent to your phone number</p>
+            <div class="flex justify-center space-x-2 mb-6">
+                <input type="text" maxlength="1" class="otp-input border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]">
+                <input type="text" maxlength="1" class="otp-input border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]">
+                <input type="text" maxlength="1" class="otp-input border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]">
+                <input type="text" maxlength="1" class="otp-input border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]">
+            </div>
+            <div class="text-center">
+                <button onclick="verifyOTP()" class="bg-[#2C5530] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
+                    Verify OTP
+                </button>
+                <p class="mt-4 text-gray-600">
+                    Didn't receive OTP? 
+                    <button onclick="resendOTP()" class="text-[#2C5530] hover:text-[#4A7B3D]">Resend</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div id="step-3" class="step-inactive bg-white rounded-lg shadow-lg p-8 text-center">
+            <div class="text-[#2C5530] mb-4">
+                <i class="fas fa-check-circle text-6xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Payment Successful!</h2>
+            <p class="text-gray-600 mb-6">Your transaction has been completed successfully.</p>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Transaction ID:</span>
+                    <span class="font-semibold" id="transaction-id"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Amount Paid:</span>
+                    <span class="font-semibold">₹500.00</span>
+                </div>
+            </div>
+            <a href="index.html" class="inline-block bg-[#2C5530] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle step navigation
+        function showStep(stepNumber) {
+            document.querySelectorAll('[id^="step-"]').forEach(step => {
+                step.classList.add('step-inactive');
+                step.classList.remove('step-active');
+            });
+            document.getElementById(`step-${stepNumber}`).classList.add('step-active');
+            document.getElementById(`step-${stepNumber}`).classList.remove('step-inactive');
+
+            // Update progress indicators
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.querySelector(`.step-${i}-indicator`);
+                if (i <= stepNumber) {
+                    indicator.classList.remove('bg-gray-300');
+                    indicator.classList.add('bg-[#2C5530]');
+                }
+            }
+        }
+
+        // Handle OTP input auto-focus
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Function to proceed to payment
+        function proceedToPayment() {
+            const registrationId = document.getElementById('registration-id').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!registrationId || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Simulate sending OTP
+            alert('OTP sent to your phone number');
+            showStep(2);
+        }
+
+        // Function to verify OTP
+        function verifyOTP() {
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            if (otp.length !== 4) {
+                alert('Please enter a valid OTP');
+                return;
+            }
+
+            // Initialize Razorpay payment
+            const options = {
+                key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+                amount: 50000, // Amount in paise (500.00 INR)
+                currency: 'INR',
+                name: 'Just Agriculture Conference',
+                description: 'Conference Registration Fee',
+                handler: function(response) {
+                    document.getElementById('transaction-id').textContent = response.razorpay_payment_id;
+                    showStep(3);
+                },
+                prefill: {
+                    contact: document.getElementById('phone').value
+                },
+                theme: {
+                    color: '#2C5530'
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        // Function to resend OTP
+        function resendOTP() {
+            alert('New OTP sent to your phone number');
+            // Clear existing OTP inputs
+            otpInputs.forEach(input => input.value = '');
+            otpInputs[0].focus();
+        }
+    </script>
+</body>
+</html> 
