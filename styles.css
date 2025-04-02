@@ -80,4 +80,46 @@ section.visible {
     .text-2xl {
         font-size: 1.5rem;
     }
+}
+
+.otp-input {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2C5530;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2C5530;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #4A7B3D;
+    box-shadow: 0 0 0 2px rgba(74, 123, 61, 0.2);
+}
+
+#otp-section {
+    display: none;
+}
+
+.verification-section.active {
+    display: block;
+}
+
+#verification-status p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Disable number input arrows */
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.otp-input[type=number] {
+    -moz-appearance: textfield;
 } 

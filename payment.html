@@ -6,6 +6,53 @@
     <title>Payment - Just Agriculture Conference 2024</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
+    <!-- Initialize Firebase -->
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHDzi4oJtjuk7bTKtLrKH_9aPAwCfqh8I",
+            authDomain: "just-agriculture.firebaseapp.com",
+            databaseURL: "https://just-agriculture-default-rtdb.firebaseio.com",
+            projectId: "just-agriculture",
+            storageBucket: "just-agriculture.firebasestorage.app",
+            messagingSenderId: "860244581607",
+            appId: "1:860244581607:web:fc708a47d357742af89642"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Get database reference
+        const database = firebase.database();
+
+        // Test Firebase Connection
+        function testFirebaseConnection() {
+            const testRef = database.ref('test');
+            testRef.set({
+                timestamp: Date.now(),
+                message: 'Test connection successful'
+            })
+            .then(() => {
+                console.log('Firebase connection successful!');
+                alert('Firebase connection successful!');
+            })
+            .catch(error => {
+                console.error('Firebase connection error:', error);
+                alert('Firebase connection error: ' + error.message);
+            });
+        }
+
+        // Call the test function when the page loads
+        window.onload = function() {
+            testFirebaseConnection();
+        };
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,6 +66,16 @@
         }
         .step-active { display: block; }
         .step-inactive { display: none; }
+        .subscription-card {
+            transition: all 0.3s ease;
+        }
+        .subscription-card:hover {
+            transform: translateY(-5px);
+        }
+        .subscription-card.selected {
+            border-color: #2C5530;
+            background-color: #f0f9f0;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -37,7 +94,7 @@
     </nav>
 
     <!-- Payment Steps -->
-    <div class="max-w-3xl mx-auto mt-10 px-4">
+    <div class="max-w-4xl mx-auto mt-10 px-4">
         <!-- Progress Bar -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center">
@@ -54,24 +111,86 @@
         </div>
 
         <!-- Step 1: Payment Details -->
-        <div id="step-1" class="step-active bg-white rounded-lg shadow-lg p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Payment Details</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 mb-2">Registration ID</label>
-                    <input type="text" id="registration-id" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your registration ID">
+        <div id="step-1" class="step-active">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Choose Your Subscription</h2>
+            
+            <!-- Subscription Options -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Basic Plan -->
+                <div class="subscription-card bg-white rounded-lg shadow-lg p-6 border-2 border-transparent cursor-pointer" data-amount="1000">
+                    <div class="text-center">
+                        <div class="text-[#2C5530] text-4xl mb-2">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Basic Pass</h3>
+                        <div class="text-3xl font-bold text-[#2C5530] mb-4">₹1,000</div>
+                        <ul class="text-gray-600 text-sm space-y-2 mb-6">
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Conference Access</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Basic Materials</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Certificate</li>
+                        </ul>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-gray-700 mb-2">Amount</label>
-                    <input type="text" id="amount" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" value="500.00" readonly>
+
+                <!-- Premium Plan -->
+                <div class="subscription-card bg-white rounded-lg shadow-lg p-6 border-2 border-transparent cursor-pointer" data-amount="5000">
+                    <div class="text-center">
+                        <div class="text-[#2C5530] text-4xl mb-2">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Premium Pass</h3>
+                        <div class="text-3xl font-bold text-[#2C5530] mb-4">₹5,000</div>
+                        <ul class="text-gray-600 text-sm space-y-2 mb-6">
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>VIP Conference Access</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Premium Materials</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Workshop Access</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Networking Dinner</li>
+                        </ul>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-gray-700 mb-2">Phone Number for OTP</label>
-                    <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your phone number">
+
+                <!-- Custom Amount -->
+                <div class="subscription-card bg-white rounded-lg shadow-lg p-6 border-2 border-transparent cursor-pointer" id="custom-amount-card">
+                    <div class="text-center">
+                        <div class="text-[#2C5530] text-4xl mb-2">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Custom Amount</h3>
+                        <div class="mb-4">
+                            <input type="number" id="custom-amount" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter amount" min="100">
+                        </div>
+                        <ul class="text-gray-600 text-sm space-y-2 mb-6">
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Flexible Payment</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Custom Access</li>
+                            <li><i class="fas fa-check text-[#2C5530] mr-2"></i>Support Agriculture</li>
+                        </ul>
+                    </div>
                 </div>
-                <button onclick="proceedToPayment()" class="w-full bg-[#2C5530] text-white py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
-                    Proceed to Payment
-                </button>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="full-name" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your email address">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Selected Amount</label>
+                        <input type="text" id="amount" class="w-full px-4 py-2 border rounded-lg bg-gray-50" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Phone Number for OTP</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:ring-[#2C5530] focus:border-[#2C5530]" placeholder="Enter your phone number">
+                    </div>
+                    <button onclick="proceedToPayment()" class="w-full bg-[#2C5530] text-white py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
+                        Proceed to Payment
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -110,7 +229,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Amount Paid:</span>
-                    <span class="font-semibold">₹500.00</span>
+                    <span class="font-semibold" id="paid-amount"></span>
                 </div>
             </div>
             <a href="index.html" class="inline-block bg-[#2C5530] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#4A7B3D] transition-colors">
@@ -120,7 +239,42 @@
     </div>
 
     <script>
-        // Function to handle step navigation
+        // Handle subscription card selection
+        const subscriptionCards = document.querySelectorAll('.subscription-card');
+        const amountInput = document.getElementById('amount');
+        const customAmountInput = document.getElementById('custom-amount');
+        let selectedAmount = 0;
+
+        subscriptionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                subscriptionCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                
+                // Get amount from data attribute or custom input
+                if (this.id === 'custom-amount-card') {
+                    selectedAmount = customAmountInput.value || 0;
+                } else {
+                    selectedAmount = this.dataset.amount;
+                }
+                
+                // Update amount input
+                amountInput.value = `₹${selectedAmount}`;
+            });
+        });
+
+        // Handle custom amount input
+        customAmountInput.addEventListener('input', function() {
+            selectedAmount = this.value;
+            amountInput.value = `₹${selectedAmount}`;
+            
+            // Select custom amount card
+            subscriptionCards.forEach(c => c.classList.remove('selected'));
+            document.getElementById('custom-amount-card').classList.add('selected');
+        });
+
         function showStep(stepNumber) {
             document.querySelectorAll('[id^="step-"]').forEach(step => {
                 step.classList.add('step-inactive');
@@ -129,7 +283,6 @@
             document.getElementById(`step-${stepNumber}`).classList.add('step-active');
             document.getElementById(`step-${stepNumber}`).classList.remove('step-inactive');
 
-            // Update progress indicators
             for (let i = 1; i <= 3; i++) {
                 const indicator = document.querySelector(`.step-${i}-indicator`);
                 if (i <= stepNumber) {
@@ -139,7 +292,6 @@
             }
         }
 
-        // Handle OTP input auto-focus
         const otpInputs = document.querySelectorAll('.otp-input');
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
@@ -154,22 +306,61 @@
             });
         });
 
-        // Function to proceed to payment
         function proceedToPayment() {
-            const registrationId = document.getElementById('registration-id').value;
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
 
-            if (!registrationId || !phone) {
-                alert('Please fill in all required fields');
+            if (!fullName || !email || !phone || !selectedAmount) {
+                alert('Please fill in all required fields and select a subscription plan');
                 return;
             }
 
-            // Simulate sending OTP
-            alert('OTP sent to your phone number');
-            showStep(2);
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (selectedAmount < 100) {
+                alert('Please enter an amount greater than ₹100');
+                return;
+            }
+
+            // Get subscription type
+            let subscriptionType = 'custom';
+            if (selectedAmount == 1000) {
+                subscriptionType = 'basic';
+            } else if (selectedAmount == 5000) {
+                subscriptionType = 'premium';
+            }
+
+            // Create registration in Firebase
+            const registrationRef = database.ref('registrations');
+            const newRegistrationRef = registrationRef.push();
+
+            newRegistrationRef.set({
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                subscriptionType: subscriptionType,
+                amount: selectedAmount,
+                paymentStatus: 'pending',
+                createdAt: Date.now()
+            })
+            .then(() => {
+                // Store registration ID for later use
+                localStorage.setItem('registration_id', newRegistrationRef.key);
+                alert('OTP sent to your phone number');
+                showStep(2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
         }
 
-        // Function to verify OTP
         function verifyOTP() {
             const otp = Array.from(otpInputs).map(input => input.value).join('');
             if (otp.length !== 4) {
@@ -177,18 +368,35 @@
                 return;
             }
 
-            // Initialize Razorpay payment
             const options = {
-                key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
-                amount: 50000, // Amount in paise (500.00 INR)
+                key: 'rzp_test_YourTestKey', // Replace with your actual Razorpay test key
+                amount: selectedAmount * 100,
                 currency: 'INR',
                 name: 'Just Agriculture Conference',
                 description: 'Conference Registration Fee',
                 handler: function(response) {
-                    document.getElementById('transaction-id').textContent = response.razorpay_payment_id;
-                    showStep(3);
+                    // Update payment status in Firebase
+                    const registrationId = localStorage.getItem('registration_id');
+                    const registrationRef = database.ref('registrations/' + registrationId);
+
+                    registrationRef.update({
+                        transactionId: response.razorpay_payment_id,
+                        paymentStatus: 'completed',
+                        updatedAt: Date.now()
+                    })
+                    .then(() => {
+                        document.getElementById('transaction-id').textContent = response.razorpay_payment_id;
+                        document.getElementById('paid-amount').textContent = `₹${selectedAmount}`;
+                        showStep(3);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating payment status.');
+                    });
                 },
                 prefill: {
+                    name: document.getElementById('full-name').value,
+                    email: document.getElementById('email').value,
                     contact: document.getElementById('phone').value
                 },
                 theme: {
@@ -200,10 +408,8 @@
             rzp.open();
         }
 
-        // Function to resend OTP
         function resendOTP() {
             alert('New OTP sent to your phone number');
-            // Clear existing OTP inputs
             otpInputs.forEach(input => input.value = '');
             otpInputs[0].focus();
         }
